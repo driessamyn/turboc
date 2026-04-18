@@ -1,6 +1,6 @@
-# OpenCode Ultraplan
+# TurbOC
 
-Multi-agent workflow for OpenCode inspired by Claude Code's Ultraプラン but fully idiomatic to OpenCode's architecture.
+Multi-agent orchestration framework for OpenCode.
 
 ## Agents
 
