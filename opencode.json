@@ -1,0 +1,116 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "comments": [
+    "This configuration defines per-agent permissions and roles. 'permission' blocks control what actions each agent may perform; 'task' lists allowed subagents and '*' denies unspecified ones.",
+    "Agent design uses primary vs subagents with model/fallback/temperature values for robust operation."
+  ],
+  "permission": {
+    "edit": "deny"
+  },
+  "agent": {
+    "architect": {
+      "mode": "primary",
+      "model": "opencode/big-pickle",
+      "fallback": "opencode/minimax-m2.5-free",
+      "temperature": 0.2,
+      "description": "Creates architectural plans - review before implementation",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": {
+          "critic": "allow",
+          "*": "deny"
+        }
+      }
+    },
+    "implementer": {
+      "mode": "primary",
+      "model": "opencode/gpt-5-nano",
+      "fallback": "opencode/minimax-m2.5-free",
+      "temperature": 0.3,
+      "description": "Implements approved plans - for actual code changes",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask",
+        "task": {
+          "explorer": "allow",
+          "tester": "allow",
+          "reviewer": "allow",
+          "debugger": "allow",
+          "*": "deny"
+        }
+      }
+    },
+    "researcher": {
+      "mode": "primary",
+      "model": "opencode/minimax-m2.5-free",
+      "fallback": "opencode/big-pickle",
+      "temperature": 0.2,
+      "description": "Investigates issues, researches requirements, gathers information",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow",
+        "task": {
+          "explorer": "allow",
+          "*": "deny"
+        }
+      }
+    },
+    "critic": {
+      "mode": "subagent",
+      "model": "opencode/nemotron-3-super-free",
+      "fallback": "opencode/big-pickle",
+      "temperature": 0.3,
+      "description": "Reviews plans and provides critical feedback",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "explorer": {
+      "mode": "subagent",
+      "model": "opencode/minimax-m2.5-free",
+      "fallback": "opencode/big-pickle",
+      "temperature": 0.2,
+      "description": "Fast code exploration and lookup",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "reviewer": {
+      "mode": "subagent",
+      "model": "opencode/nemotron-3-super-free",
+      "fallback": "opencode/big-pickle",
+      "temperature": 0.3,
+      "description": "Post-implementation code review and quality assurance",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "tester": {
+      "mode": "subagent",
+      "model": "opencode/big-pickle",
+      "fallback": "opencode/minimax-m2.5-free",
+      "temperature": 0.3,
+      "description": "Generates tests and validates code correctness",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask"
+      }
+    },
+    "debugger": {
+      "mode": "subagent",
+      "model": "opencode/minimax-m2.5-free",
+      "fallback": "opencode/big-pickle",
+      "temperature": 0.2,
+      "description": "Root cause analysis and debugging assistance",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    }
+  }
+}
